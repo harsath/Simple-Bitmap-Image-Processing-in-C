@@ -1,3 +1,5 @@
+// make logger.o
+// make bmp
 #include<stdio.h>
 #include<stdlib.h>
 #include<stdint.h>
