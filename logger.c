@@ -24,7 +24,7 @@ void logger(const char* message, uint8_t tag, FILE *fd){
         fprintf(fd, "INFO: %s\n%s\n",MSG_EMBED,message);
     }
     if(tag & EXIT){
-        exit(0);
+        exit(1);
     }
 
 }
