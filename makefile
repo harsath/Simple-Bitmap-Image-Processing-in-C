@@ -1,14 +1,19 @@
 LOGGER_OUT:=logger.o
-BMP_PROCESS:=bmp
+NEG_PROCESS:=neg
 LOGGER_SRC:=logger.c
-BMP_SRC:=bmp_process1.c
+NEG_SRC:=negative_convert.c
 LOGGER_HEADER:=logger.h
+BRIGHT_SRC:=bright_convert.c
+BRIGHT_PROCESS:=bri
 
 $(LOGGER_OUT):	$(LOGGER_SRC)
 		gcc -c $(LOGGER_SRC)
 
-$(BMP_PROCESS):	$(BMP_SRC) $(LOGGER_OUT) $(LOGGER_HEADER)
-		gcc -Wall -o $(BMP_PROCESS) $(BMP_SRC) $(LOGGER_OUT)
+$(NEG_PROCESS):	$(NEG_SRC) $(LOGGER_OUT) $(LOGGER_HEADER)
+		gcc -Wall -o $(NEG_PROCESS) $(NEG_SRC) $(LOGGER_OUT)
+
+$(BRIGHT_PROCESS):	$(BRIGHT_SRC) $(LOGGER_OUT) $(LOGGER_HEADER)
+		gcc -Wall -o $(BRIGHT_PROCESS) $(BRIGHT_SRC) $(LOGGER_OUT)
 
 clean:
-	rm $(LOGGER_OUT) $(BMP_PROCESS)
+	rm $(LOGGER_OUT) $(NEG_PROCESS) $(BRIGHT_PROCESS)
