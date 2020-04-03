@@ -45,7 +45,7 @@ int main(){
     logger(img_dim,INFO,stdout);
     fwrite(bmp_header,sizeof(uint8_t),54, bmp_dump);
     //Writing the output bitmap file
-    //Placeholder for negative image
+    //Placeholder for bright image
     uint8_t *bright_img = (uint8_t*)malloc(sizeof(bmp_height*bmp_width));
     uint8_t temp_buffer;
     if(bmp_bitDepth<=8){
