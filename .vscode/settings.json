@@ -1,6 +1,7 @@
 {
     "files.associations": {
         "logger.h": "c",
-        "stdint.h": "c"
+        "stdint.h": "c",
+        "argp.h": "c"
     }
 }

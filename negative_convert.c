@@ -12,15 +12,15 @@
 #define ARR_SIZE(arr)(size_t)(sizeof(arr)/sizeof(arr[0]))
 //TODO: Make it as module passed by cli
 //TODO: negative(const char *src, const char *dest) sprintf(dest,"%s/%s",(char*)system("pwd"),(char*)FILE_NAME);
-int main(){
+int negative(const char *src, const char *dest){
     // Input image stream
-    FILE *bmp_read = fopen("test_img/lena512.bmp","rb");
+    FILE *bmp_read = fopen(src,"rb");
 
     if(bmp_read==NULL){
        logger("Cannot Open the File", ERROR|EXIT, stdout);
     }
     // Output Binary(Bitmap Image)
-    FILE *bmp_dump = fopen("test_img/res/negative.bmp","wb");
+    FILE *bmp_dump = fopen(dest,"wb");
 
     // Image Metadata
     uint8_t bmp_header[54];
