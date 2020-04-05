@@ -10,18 +10,24 @@
 #define INFO (uint8_t)0x02
 #define EXIT (uint8_t)0x04
 #define ARR_SIZE(arr)(size_t)(sizeof(arr)/sizeof(arr[0]))
+#define C_BUFFER_SIZE 50
 //TODO: Make it as module passed by cli
 //TODO: negative(const char *src, const char *dest) sprintf(dest,"%s/%s",(char*)system("pwd"),(char*)FILE_NAME);
 int negative(const char *src, const char *dest){
     // Input image stream
     FILE *bmp_read = fopen(src,"rb");
-
-    if(bmp_read==NULL){
-       logger("Cannot Open the File", ERROR|EXIT, stdout);
+    if(!bmp_read){
+       logger("Cannot Open the source file", ERROR|EXIT, stdout);
     }
     // Output Binary(Bitmap Image)
-    FILE *bmp_dump = fopen(dest,"wb");
+    char destination_buffer[C_BUFFER_SIZE];
+    static unsigned long long int count_image = 1;
+    sprintf(destination_buffer,"%s/negative_%llu.bmp",dest, count_image);
 
+    FILE *bmp_dump = fopen(dest,"wb");
+    if(!bmp_dump){
+        logger("Cannot Open the destination file", ERROR|EXIT, stdout);
+    }
     // Image Metadata
     uint8_t bmp_header[54];
     uint8_t bmp_colorTable[1024];
@@ -33,29 +39,40 @@ int negative(const char *src, const char *dest){
     int bmp_height = *(int*)&bmp_header[22];
     int bmp_bitDepth = *(int*)&bmp_header[28];
     if(bmp_bitDepth<=8){
-        fread(bmp_colorTable,sizeof(uint8_t),1024,bmp_read);
+        if(!fread(bmp_colorTable,sizeof(uint8_t),1024,bmp_read)){
+            logger("Color table cannot be read", ERROR|EXIT, stdout);
+        }
     }
     uint8_t img_buffer[bmp_height*bmp_width];
-    fread(img_buffer, sizeof(uint8_t), bmp_height*bmp_width, bmp_read);
+    if(!fread(img_buffer, sizeof(uint8_t), bmp_height*bmp_width, bmp_read)){
+        logger("Image buffer cannot be read", ERROR|EXIT, stdout);
+    }
     //Logging
     char* img_dim=malloc(sizeof(char)*50);
+    assert(img_dim!=NULL);
     sprintf(img_dim,"Width:%d\tHeight:%d",bmp_width,bmp_height);
     logger(img_dim,INFO,stdout);
-    fwrite(bmp_header,sizeof(uint8_t),54, bmp_dump);
+    if(!fwrite(bmp_header,sizeof(uint8_t),54, bmp_dump)){
+        logger("Cannot write the image header", ERROR|EXIT, stdout);
+    }
     //Writing the output bitmap file
     //Placeholder for negative image
-    uint8_t *neg_image = (uint8_t*)malloc(sizeof(bmp_height*bmp_width));
+    uint8_t *neg_image = (uint8_t*)malloc(bmp_height*bmp_width);
     if(bmp_bitDepth<=8){
-        fwrite(bmp_colorTable,sizeof(uint8_t),1024, bmp_dump);
+        if(!fwrite(bmp_colorTable,sizeof(uint8_t),1024, bmp_dump)){
+            logger("Cannot write color table on destination", ERROR|EXIT, stdout);
+        }
     }
     for(size_t i=0; i<bmp_height; i++){
         for(size_t x=0; x<bmp_width; x++){
             neg_image[i*bmp_width+x] = 255-img_buffer[i*bmp_width+x];   // sub(255,ORG_VALUE)=NEG for 8 bit pat;
         }
     }
-
-    fwrite(neg_image,sizeof(uint8_t), bmp_height*bmp_width, bmp_dump);
+    if(!fwrite(neg_image,sizeof(uint8_t), bmp_height*bmp_width, bmp_dump)){
+           logger("Cannot write to destination", ERROR|EXIT, stdout);
+    }
     //Closing the File stream
     fclose(bmp_dump); fclose(bmp_read);
+    count_image+=1;
     return 0;
 }
