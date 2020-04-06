@@ -15,7 +15,7 @@
 
 // TODO: Update usage print
 void usage_binary(void){
-    printf("Usage: ./bin --negative --bright --src [source image] --dest [output image path] \n");
+    printf("Usage: ./image-pipe --negative --bright --src [source image] --dest [output image directory] \n");
 }
 //Placeholder struct for parsed arguments
 typedef struct parse_args{
@@ -40,6 +40,10 @@ int main(int argc, char* argv[]){
     {"dest", required_argument, NULL, 'd'},
     {NULL, 0, NULL, 0}};
     char ch;
+    if(argc == 1){
+        usage_binary();
+        exit(1);
+    }
     while ((ch = getopt_long(argc, argv, "n:b:s:d:", long_options, NULL)) != -1){
         switch(ch){
             case 'n':
