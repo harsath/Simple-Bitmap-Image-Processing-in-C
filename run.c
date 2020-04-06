@@ -4,8 +4,8 @@
 #include<getopt.h>
 #include<string.h>
 #include<stdbool.h>
-#include "bright_convert.c"
-#include "negative_convert.c"
+#include "logger.h"
+#include "processing.h"
 
 #define C_BUFFER_SIZE 50
 #define ERROR (uint8_t)0x01
@@ -40,10 +40,6 @@ int main(int argc, char* argv[]){
     {"dest", required_argument, NULL, 'd'},
     {NULL, 0, NULL, 0}};
     char ch;
-    char current_wd[C_BUFFER_SIZE];
-    char full_path_dir[C_BUFFER_SIZE+20];
-    void* source_buffer;
-    void* destination_buffer;
     while ((ch = getopt_long(argc, argv, "n:b:s:d:", long_options, NULL)) != -1){
         switch(ch){
             case 'n':
@@ -66,7 +62,6 @@ int main(int argc, char* argv[]){
         }
 
     }
-
     if(current->is_negative){
         negative(current->src_negative, current->dest_negative);
     }
@@ -76,8 +71,3 @@ int main(int argc, char* argv[]){
     
     return EXIT_SUCCESS;
 }
-
-
-
-
-

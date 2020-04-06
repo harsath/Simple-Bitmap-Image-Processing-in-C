@@ -3,6 +3,7 @@
         "logger.h": "c",
         "stdint.h": "c",
         "argp.h": "c",
-        "locale": "c"
+        "locale": "c",
+        "export": "c"
     }
 }

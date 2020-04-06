@@ -21,7 +21,7 @@ int bright(const char *src, const char *dest){  // sprintf(dest,"%s/%s",(char*)s
     FILE *bmp_read = fopen(src,"rb");
 
     if(bmp_read==NULL){
-       logger("Cannot Open the File", ERROR|EXIT, stderr);
+       logger("bright_convert.c:Cannot Open the File", ERROR|EXIT, stderr);
     }
     // Output Binary(Bitmap Image)
     char destination_buffer[C_BUFFER_SIZE];
@@ -30,7 +30,7 @@ int bright(const char *src, const char *dest){  // sprintf(dest,"%s/%s",(char*)s
 
     FILE *bmp_dump = fopen(destination_buffer,"wb");
     if(!bmp_dump){
-        logger("Cannot write to File", ERROR|EXIT, stderr);
+        logger("bright_convert.c:Cannot write to File", ERROR|EXIT, stderr);
     }
     // Image Metadata
     uint8_t bmp_header[54];
@@ -48,24 +48,24 @@ int bright(const char *src, const char *dest){  // sprintf(dest,"%s/%s",(char*)s
     }
     uint8_t *img_buffer = (uint8_t*)malloc(bmp_height*bmp_width);
     if(!img_buffer){
-        logger("Cannot allocate memory for Image Buffer", ERROR|EXIT, stderr);
+        logger("bright_convert.c:Cannot allocate memory for Image Buffer", ERROR|EXIT, stderr);
     }
     fread(img_buffer, sizeof(uint8_t), bmp_height*bmp_width, bmp_read);
     //Logging
     char* img_dim=malloc(sizeof(char)*50);
     if(!img_dim){
-        logger("Memory Error", ERROR|EXIT, stderr);
+        logger("bright_convert.c:Memory Error", ERROR|EXIT, stderr);
     }
     sprintf(img_dim,"Width:%d\tHeight:%d",bmp_width,bmp_height);
     logger(img_dim,INFO,stdout);
     if(!fwrite(bmp_header,sizeof(uint8_t),54, bmp_dump)){
-        logger("Write Error", ERROR|EXIT, stderr);
+        logger("bright_convert.c:Write Error", ERROR|EXIT, stderr);
     }
     //Writing the output bitmap file
     //Placeholder for bright image
     uint8_t *bright_img = (uint8_t*)malloc(bmp_height*bmp_width);
     if(!bright_img){
-        logger("Cannot allocate memory for Image Buffer", ERROR|EXIT, stderr);
+        logger("bright_convert.c:Cannot allocate memory for Image Buffer", ERROR|EXIT, stderr);
     }
     int temp_buffer;
     if(bmp_bitDepth<=8){
@@ -79,7 +79,7 @@ int bright(const char *src, const char *dest){  // sprintf(dest,"%s/%s",(char*)s
         }
     }
     if(!fwrite(bright_img,sizeof(uint8_t), bmp_height*bmp_width, bmp_dump)){
-        logger("Write Error", ERROR|EXIT, stderr);
+        logger("bright_convert.c:Write Error", ERROR|EXIT, stderr);
     }
     //Closing the File stream
     //TODO: Macro to freeup malloc() allocated memory
