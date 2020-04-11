@@ -13,10 +13,10 @@
 #define BRIGHTNESS_FACTOR 27
 #define MAX_COLOR_G 255 // Grayscale 2^8-1 
 #define C_BUFFER_SIZE 50
+//For pointer deferencing on the following lines
+static_assert(sizeof(int)==4, "Size of int is not 4 bytes, This code is not compadable");
 
-//TODO: Make it as module passed by cli
-//TODO: bright(const char *src, const char *dest) -> sprintf(dest,"%s/%s",(char*)system("pwd"),(char*)FILE_NAME);
-int bright(const char *src, const char *dest){  // sprintf(dest,"%s/%s",(char*)system("pwd"),(char*)FILE_NAME);
+int bright(const char src[static 1], const char dest[static 1]){  // sprintf(dest,"%s/%s",(char*)system("pwd"),(char*)FILE_NAME);
     // Input image stream
     FILE *bmp_read = fopen(src,"rb");
 
@@ -26,7 +26,7 @@ int bright(const char *src, const char *dest){  // sprintf(dest,"%s/%s",(char*)s
     // Output Binary(Bitmap Image)
     char destination_buffer[C_BUFFER_SIZE];
     static unsigned long long int count_image = 1;
-    sprintf(destination_buffer,"%s/bright_%llu.bmp",dest, count_image);
+    snprintf(destination_buffer,C_BUFFER_SIZE,"%s/bright_%llu.bmp",dest, count_image);
 
     FILE *bmp_dump = fopen(destination_buffer,"wb");
     if(!bmp_dump){
@@ -44,7 +44,9 @@ int bright(const char *src, const char *dest){  // sprintf(dest,"%s/%s",(char*)s
     int bmp_bitDepth = *(int*)&bmp_header[28];
     printf("width=%d height=%d bitDepth=%d\n", bmp_width, bmp_height, bmp_bitDepth);
     if(bmp_bitDepth<=8){
-        fread(bmp_colorTable,sizeof(uint8_t),1024,bmp_read);
+        if(!fread(bmp_colorTable,sizeof(uint8_t),1024,bmp_read)){
+            logger("bright_convert.c:Cannot read image table", ERROR|EXIT, stderr);
+        }
     }
     uint8_t *img_buffer = (uint8_t*)malloc(bmp_height*bmp_width);
     if(!img_buffer){
@@ -52,11 +54,11 @@ int bright(const char *src, const char *dest){  // sprintf(dest,"%s/%s",(char*)s
     }
     fread(img_buffer, sizeof(uint8_t), bmp_height*bmp_width, bmp_read);
     //Logging
-    char* img_dim=malloc(sizeof(char)*50);
+    char* img_dim=malloc(sizeof(char)*C_BUFFER_SIZE);
     if(!img_dim){
         logger("bright_convert.c:Memory Error", ERROR|EXIT, stderr);
     }
-    sprintf(img_dim,"Width:%d\tHeight:%d",bmp_width,bmp_height);
+    snprintf(img_dim,C_BUFFER_SIZE,"Width:%d\tHeight:%d",bmp_width,bmp_height);
     logger(img_dim,INFO,stdout);
     if(!fwrite(bmp_header,sizeof(uint8_t),54, bmp_dump)){
         logger("bright_convert.c:Write Error", ERROR|EXIT, stderr);

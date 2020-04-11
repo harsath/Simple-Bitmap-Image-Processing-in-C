@@ -17,6 +17,7 @@
 void usage_binary(void){
     printf("Usage: ./image-pipe --negative --bright --src [source image] --dest [output image directory] \n");
 }
+
 //Placeholder struct for parsed arguments
 typedef struct parse_args{
     // Negative conversion
@@ -30,7 +31,8 @@ typedef struct parse_args{
     char *dest_bright;
 }CLI_ARG;
 
-int main(int argc, char* argv[]){
+int main(int argc, char* argv[static argc+1]){
+    // Command Line Arg parsing
     CLI_ARG *current = (CLI_ARG*)malloc(sizeof(CLI_ARG));
     *current = (CLI_ARG){.is_negative=0, .is_bright=0};
     static struct option long_options[] ={

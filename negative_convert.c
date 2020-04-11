@@ -11,9 +11,10 @@
 #define EXIT (uint8_t)0x04
 #define ARR_SIZE(arr)(size_t)(sizeof(arr)/sizeof(arr[0]))
 #define C_BUFFER_SIZE 50
-//TODO: Make it as module passed by cli
-//TODO: negative(const char *src, const char *dest) sprintf(dest,"%s/%s",(char*)system("pwd"),(char*)FILE_NAME);
-int negative(const char *src, const char *dest){
+//For pointer deferencing on the following lines
+static_assert(sizeof(int)==4, "Size of int is not 4 bytes, This code is not compadable");
+
+int negative(const char src[static 1], const char dest[static 1]){
     // Input image stream
     FILE *bmp_read = fopen(src,"rb");
     if(!bmp_read){
@@ -22,7 +23,7 @@ int negative(const char *src, const char *dest){
     // Output Binary(Bitmap Image)
     char destination_buffer[C_BUFFER_SIZE];
     static unsigned long long int count_image = 1;
-    sprintf(destination_buffer,"%s/negative_%llu.bmp",dest, count_image);
+    snprintf(destination_buffer,C_BUFFER_SIZE,"%s/negative_%llu.bmp",dest, count_image);
 
     FILE *bmp_dump = fopen(destination_buffer,"wb");
     if(!bmp_dump){
@@ -48,16 +49,16 @@ int negative(const char *src, const char *dest){
         logger("negative_convert.c:Image buffer cannot be read", ERROR|EXIT, stdout);
     }
     //Logging
-    char* img_dim=malloc(sizeof(char)*50);
+    char* img_dim = malloc(sizeof(char)*C_BUFFER_SIZE);
     assert(img_dim!=NULL);
-    sprintf(img_dim,"Width:%d\tHeight:%d",bmp_width,bmp_height);
+    snprintf(img_dim,C_BUFFER_SIZE,"Width:%d\tHeight:%d",bmp_width,bmp_height);
     logger(img_dim,INFO,stdout);
     if(!fwrite(bmp_header,sizeof(uint8_t),54, bmp_dump)){
         logger("negative_convert.c:Cannot write the image header", ERROR|EXIT, stdout);
     }
     //Writing the output bitmap file
     //Placeholder for negative image
-    uint8_t *neg_image = (uint8_t*)malloc(bmp_height*bmp_width);
+    uint8_t *neg_image = (uint8_t*)calloc((size_t){bmp_height*bmp_width},sizeof(uint8_t));
     if(bmp_bitDepth<=8){
         if(!fwrite(bmp_colorTable,sizeof(uint8_t),1024, bmp_dump)){
             logger("negative_convert.c:Cannot write color table on destination", ERROR|EXIT, stdout);
