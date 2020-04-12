@@ -4,3 +4,10 @@ This project is far from complete and I build this just because I was playing ar
 processing Bitmaps in C 
 
 Feel free to clone it and build your own version from my existing C code
+
+How to use it?
+First, Compile the source code
+$make install
+
+A Binary image-pipe will be generated
+$./image-pipe --negative --bright --src test_img/lena512.bmp --dest FOLDERNAME
