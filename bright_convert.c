@@ -1,5 +1,5 @@
-// make logger.o
-// make bright
+// Author: Harsath KT
+
 #include<stdio.h>
 #include<stdlib.h>
 #include<stdint.h>
