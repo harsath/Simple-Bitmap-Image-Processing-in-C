@@ -1,9 +1,0 @@
-{
-    "files.associations": {
-        "logger.h": "c",
-        "stdint.h": "c",
-        "argp.h": "c",
-        "locale": "c",
-        "export": "c"
-    }
-}
