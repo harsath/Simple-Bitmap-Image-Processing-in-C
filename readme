@@ -1,1 +1,6 @@
-This contains source code for simple BitMap Image Processing written in C. This Project is under active developnment.
+This repository contains Simple Bitmap processing written in C
+
+This project is far from complete and I build this just because I was playing around with 
+processing Bitmaps in C 
+
+Feel free to clone it and build your own version from my existing C code
